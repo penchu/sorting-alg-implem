@@ -8,6 +8,7 @@
 
 void merge_sort(int *array, int start, int end);
 void merging(int *array, int start, int mid, int end);
+void quicksort(int *array, int start, int end);
 
 int main(void) {
 
@@ -64,11 +65,28 @@ int main(void) {
     // }
 
     // Merge sort:
-    int len = sizeof(array)/sizeof(array[0]);
+    // int len = sizeof(array)/sizeof(array[0]);
+    // merge_sort(array, 0, len-1);
 
-    merge_sort(array, 0, len-1);
+    // Quicksort:
+    // {9, 5, 7, 2, 0, 6, 3, 8, 1, 4}
+    // int pivot = array[n-1];
+    quicksort(array, 0, (n-1));
 
-    for (int i = 0; i < len; i++) {
+    // int pivot = array[n-1];
+    // position = 0;
+    // for (int i = 0; i <= n-2; i++) {
+    //     if (array[i] < pivot) {
+    //         temp = array[i];
+    //         array[i] = array[position];
+    //         array[position++] = temp;
+    //     }
+    // }
+    // temp = array[position];
+    // array[position] = pivot;
+    // array[n-1] = temp;
+
+    for (int i = 0; i <= n-1; i++) {
         printf("%d ", array[i]);
     }
     printf("\n");
@@ -101,4 +119,26 @@ void merging(int *array, int start, int mid, int end) {
     }
 
     memcpy(&array[start], new_array, (end - start + 1) * sizeof(int));
+}
+
+void quicksort(int *array, int start, int end) {
+    printf("%d %d\n", start, end);
+    if (start >= end) return;
+
+    int pivot = array[end];
+    int position = 0;
+    int temp;
+    for (int i = 0; i <= end-2; i++) {
+        if (array[i] < pivot) {
+            temp = array[i];
+            array[i] = array[position];
+            array[position++] = temp;
+        }
+    }
+    temp = array[position];
+    array[position] = pivot;
+    array[end-1] = temp;
+
+    quicksort(array, 0, position);
+    quicksort(array, position+1, end-1);
 }
