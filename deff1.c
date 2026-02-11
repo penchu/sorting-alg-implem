@@ -4,15 +4,16 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#define n 10
+#define n 5
 
 void merge_sort(int *array, int start, int end);
 void merging(int *array, int start, int mid, int end);
 void quicksort(int *array, int start, int end);
+void quicksort_hoare(int *array, int start, int end);
 
 int main(void) {
 
-    int array[n] = {7, 2, 1, 6, 8, 5, 3, 4, 2, 1};
+    int array[n] = {2, 3, 0, 4, 1};
     int temp;
     int position;
     int j;
@@ -68,24 +69,11 @@ int main(void) {
     // int len = sizeof(array)/sizeof(array[0]);
     // merge_sort(array, 0, len-1);
 
-    // Quicksort:
-    // {9, 5, 7, 2, 0, 6, 3, 8, 1, 4}
-    // int pivot = array[n-1];
+    // Quicksort Lomuto:
     
-    quicksort(array, 0, (n-1));
+    // quicksort(array, 0, (n-1));
 
-    // int pivot = array[n-1];
-    // position = 0;
-    // for (int i = 0; i <= n-2; i++) {
-    //     if (array[i] < pivot) {
-    //         temp = array[i];
-    //         array[i] = array[position];
-    //         array[position++] = temp;
-    //     }
-    // }
-    // temp = array[position];
-    // array[position] = pivot;
-    // array[n-1] = temp;
+    quicksort_hoare(array, 0, (n-1));
 
     for (int i = 0; i <= n-1; i++) {
         printf("%d ", array[i]);
@@ -127,10 +115,8 @@ void quicksort(int *array, int start, int end) {
 
     int pivot = array[end];
     int position = start;
-    // int position = 0;
     int temp;
     for (int i = start; i <= end-1; i++) {
-    // for (int i = 0; i <= end-1; i++) {
         if (array[i] < pivot) {
             temp = array[i];
             array[i] = array[position];
@@ -142,11 +128,32 @@ void quicksort(int *array, int start, int end) {
     array[end] = temp;
 
     quicksort(array, start, position-1);
-    // for (int i = 0; i <= n-1; i++) {
-    //     printf("%d ", array[i]);
-    // }
-    // printf("\n");
     quicksort(array, position+1, end);
+}
 
+void quicksort_hoare(int *array, int start, int end) {
+    if (start >= end) return;
 
+    int pivot = array[start];
+    int position;
+    int temp;
+
+    // int a = array[start+1];
+    // int b = array[end];
+
+    for (int i = start+1; i <= end; i++) {
+        for (int j = end; j >= start+1; j--) {
+            if (i >= j) {
+                position = i;
+                break;
+            }
+            if (array[i] >= pivot && array[j] <= pivot) {
+                temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            } 
+        }
+    }
+    quicksort_hoare(array, start, position-1);
+    quicksort_hoare(array, position+1, end);
 }
