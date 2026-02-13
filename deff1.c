@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 #define n 5
 
@@ -137,23 +138,52 @@ void quicksort_hoare(int *array, int start, int end) {
     int pivot = array[start];
     int position;
     int temp;
+    // {2, 3, 0, 4, 1}
+    // {1, 3, 0, 4, 2}
+    // {1, 0, 3, 4, 2}
+    // {0, 1, 3, 2, 4}
+    // {0, 1, 2, 3, 4}
+    int i = start;
+    int j = end;
+    while (true) {
 
-    // int a = array[start+1];
-    // int b = array[end];
+        // while (i < end && array[i++] < pivot);
+        // while (j > start && array[j--] > pivot);
 
-    for (int i = start+1; i <= end; i++) {
-        for (int j = end; j >= start+1; j--) {
-            if (i >= j) {
-                position = i;
-                break;
-            }
-            if (array[i] >= pivot && array[j] <= pivot) {
-                temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            } 
+        while (i < end && array[i] < pivot) {
+            i++;
         }
-    }
-    quicksort_hoare(array, start, position-1);
+        while (j > start && array[j] > pivot) {
+            j--;
+        }
+
+        if (i < j) {
+            temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        else {
+            position = j;
+            break;
+        }
+        
+    } 
+    // position = j;
+
+    // for (int i = start; i <= end; i++) {
+    //     for (int j = end; j >= start; j--) {
+    //         if (i >= j) {
+    //             position = j;
+    //             break;
+    //         }
+    //         if (array[i] >= pivot && array[j] <= pivot) {
+    //             temp = array[i];
+    //             array[i] = array[j];
+    //             array[j] = temp;
+    //         } 
+    //     }
+    // }    
+
+    quicksort_hoare(array, start, position);
     quicksort_hoare(array, position+1, end);
 }
