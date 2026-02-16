@@ -5,16 +5,19 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-#define n 7
+#define n 6
 
 void merge_sort(int *array, int start, int end);
 void merging(int *array, int start, int mid, int end);
 void quicksort(int *array, int start, int end);
 void quicksort_hoare(int *array, int start, int end);
+int linear_search(int *array, int key);
+int binary_search_iterative(int *array, int key);
+int binary_search_recursive(int *array, int key, int start, int end);
 
 int main(void) {
 
-    int array[n] = {5, 1, 5, 1, 5, 1, 5};
+    int array[n] = {5, 2, 8, 1, 9, 3};
     int temp;
     int position;
     int j;
@@ -76,10 +79,16 @@ int main(void) {
 
     quicksort_hoare(array, 0, (n-1));
 
-    for (int i = 0; i <= n-1; i++) {
-        printf("%d ", array[i]);
-    }
-    printf("\n");
+    int key = 9;
+    // int key_pos = linear_search(array, key);
+    int key_pos = binary_search_iterative(array, key, 0, n-1);
+
+    printf("%d\n", key_pos);
+
+    // for (int i = 0; i <= n-1; i++) {
+    //     printf("%d ", array[i]);
+    // }
+    // printf("\n");
 
     return 0;
 }
@@ -138,26 +147,15 @@ void quicksort_hoare(int *array, int start, int end) {
     int pivot = array[start];
     int position;
     int temp;
-    //{0, 0};
     int i = start;
     int j = end;
     while (true) {
-
-        // while (i < end && array[i++] < pivot);
-        // while (j > start && array[j--] > pivot);
-
-        // if (i >= j) {
-        //     position = j;
-        //     break;        
-        // }
-
         while (i < end && array[i] < pivot) {
             i++;
         }
         while (j > start && array[j] > pivot) {
             j--;
         }
-
         if (i < j) {
             temp = array[i];
             array[i] = array[j];
@@ -173,4 +171,35 @@ void quicksort_hoare(int *array, int start, int end) {
 
     quicksort_hoare(array, start, position);
     quicksort_hoare(array, position+1, end);
+}
+
+int linear_search(int *array, int key) {
+    for (int i = 0; i < n; i++) {
+        if (array[i] == key) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int binary_search_iterative(int *array, int key) {
+    int mid;
+    int low = 0;
+    int high = n;
+
+    while (low <= high) {
+        mid = (high-low)/2+low;
+        if (key < array[mid]) high = mid-1;
+        if (key > array[mid]) low = mid+1;
+        if (key == array[mid]) return mid;
+    }
+
+    return -1;
+}
+
+int binary_search_recursive(int *array, int key, int start, int end) {
+    if (start>= end) return;
+
+    int mid = (end-start)/2;
+    
 }
