@@ -7,17 +7,22 @@
 
 #define n 6
 
+typedef struct {
+    int first_occ;
+    int last_occ;
+} Search;
+
 void merge_sort(int *array, int start, int end);
 void merging(int *array, int start, int mid, int end);
 void quicksort(int *array, int start, int end);
 void quicksort_hoare(int *array, int start, int end);
 int linear_search(int *array, int key);
 int binary_search_iterative(int *array, int key);
-int binary_search_recursive(int *array, int key, int start, int end);
+Search binary_search_recursive(int *array, int key, int start, int end);
 
 int main(void) {
 
-    int array[n] = {5, 2, 8, 1, 9, 3};
+    int array[n] = {5, 2, 8, 1, 9, 9};
     int temp;
     int position;
     int j;
@@ -82,9 +87,9 @@ int main(void) {
     int key = 9;
     // int key_pos = linear_search(array, key);
     // int key_pos = binary_search_iterative(array, key);
-    int key_pos = binary_search_recursive(array, key, 0, (n-1));
+    Search result_main = binary_search_recursive(array, key, 0, (n-1));
 
-    printf("%d\n", key_pos);
+    printf("first: %d last: %d\n", result_main.first_occ, result_main.last_occ);
 
     // for (int i = 0; i <= n-1; i++) {
     //     printf("%d ", array[i]);
@@ -198,14 +203,28 @@ int binary_search_iterative(int *array, int key) {
     return -1;
 }
 
-int binary_search_recursive(int *array, int key, int start, int end) {
+Search binary_search_recursive(int *array, int key, int start, int end) {
+    Search result;
+    // {1, 2, 5, 8, 9, 9}
+    // int mid = (end-start)/2 + start;
     if (start >= end) {
-        if (key == array[start]) return start;
-        else return -1;
+        // if (key == array[start]) return start;
+        if (key == array[start]) {
+            result.last_occ = start;
+            printf("last_occ: %d\n", result.last_occ);
+        }
+        else result.last_occ = result.first_occ;
+        return result;
     }    
     int mid = (end-start)/2 + start;
-    if (key == array[mid]) return mid;
-    if (key < array[mid]) end = mid-1;
-    if (key > array[mid]) start = mid+1;    
-    binary_search_recursive(array, key, start, end);   
+    // printf("%d\n", mid);
+    if (key == array[mid]) {
+        result.first_occ = mid;
+        printf("first_occ: %d\n", result.first_occ);
+        binary_search_recursive(array, key, (mid+1), end); 
+        binary_search_recursive(array, key, start, (mid-1));
+    }
+    if (key < array[mid]) binary_search_recursive(array, key, start, (mid-1));
+    if (key > array[mid]) binary_search_recursive(array, key, (mid+1), end);    
+    // binary_search_recursive(array, key, start, end);   
 }
