@@ -81,7 +81,8 @@ int main(void) {
 
     int key = 9;
     // int key_pos = linear_search(array, key);
-    int key_pos = binary_search_iterative(array, key, 0, n-1);
+    // int key_pos = binary_search_iterative(array, key);
+    int key_pos = binary_search_recursive(array, key, 0, (n-1));
 
     printf("%d\n", key_pos);
 
@@ -198,8 +199,13 @@ int binary_search_iterative(int *array, int key) {
 }
 
 int binary_search_recursive(int *array, int key, int start, int end) {
-    if (start>= end) return;
-
-    int mid = (end-start)/2;
-    
+    if (start >= end) {
+        if (key == array[start]) return start;
+        else return -1;
+    }    
+    int mid = (end-start)/2 + start;
+    if (key == array[mid]) return mid;
+    if (key < array[mid]) end = mid-1;
+    if (key > array[mid]) start = mid+1;    
+    binary_search_recursive(array, key, start, end);   
 }
