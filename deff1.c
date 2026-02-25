@@ -5,7 +5,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-#define n 6
+#define n 9
+#define occ_size 3
 
 typedef struct {
     int first_occ;
@@ -19,10 +20,12 @@ void quicksort_hoare(int *array, int start, int end);
 int linear_search(int *array, int key);
 int binary_search_iterative(int *array, int key);
 Search binary_search_recursive(int *array, int key, int start, int end);
+int binary_search_rec_left(int *array, int key, int start, int end);
+int binary_search_rec_right(int *array, int key, int start, int end);
 
 int main(void) {
 
-    int array[n] = {5, 2, 8, 1, 9, 9};
+    int array[n] = {5, 1, 1, 2, 8, 1, 3, 9, 9};
     int temp;
     int position;
     int j;
@@ -84,11 +87,11 @@ int main(void) {
 
     quicksort_hoare(array, 0, (n-1));
 
-    int key = 9;
+    int key = 5;
     // int key_pos = linear_search(array, key);
     // int key_pos = binary_search_iterative(array, key);
-    Search result_main = binary_search_recursive(array, key, 0, (n-1));
 
+    Search result_main = binary_search_recursive(array, key, 0, (n-1));
     printf("first: %d last: %d\n", result_main.first_occ, result_main.last_occ);
 
     // for (int i = 0; i <= n-1; i++) {
@@ -204,27 +207,71 @@ int binary_search_iterative(int *array, int key) {
 }
 
 Search binary_search_recursive(int *array, int key, int start, int end) {
-    Search result;
-    // {1, 2, 5, 8, 9, 9}
+    Search result = {0, 0};
+    result.first_occ = binary_search_rec_left(array, key, start, end);
+    result.last_occ = binary_search_rec_right(array, key, start, end);
+    // printf("first_occ: %d last_occ: %d\n", result.first_occ, result.last_occ);
+    return result;
+    // Search result;
+    // {1, 1, 1, 2, 3, 5, 8, 9, 9}
+
+    // if (start >= end) {
+    //     if (key == array[start]) {
+    //         // result.last_occ = start;
+    //         if (array_occ[0] == 0) array_occ[0] = start;
+    //         else array_occ[1] = start;
+    //         printf("last_occ: %d\n", array_occ[1]);
+    //         // printf("last_occ: %d\n", result.last_occ);
+    //     }
+    //     // else result.last_occ = result.first_occ;
+    //     // else result.last_occ = -1;
+    //     if (array_occ[0] == 0) array_occ[0] = -1;
+    //     else array_occ[1] = -1;
+    //     printf("last_occ_2: %d\n", array_occ[1]);
+    //     // printf("last_occ: %d\n", result.last_occ);
+    //     return result;
+    // }    
+
     // int mid = (end-start)/2 + start;
-    if (start >= end) {
-        // if (key == array[start]) return start;
-        if (key == array[start]) {
-            result.last_occ = start;
-            printf("last_occ: %d\n", result.last_occ);
-        }
-        else result.last_occ = result.first_occ;
-        return result;
-    }    
-    int mid = (end-start)/2 + start;
-    // printf("%d\n", mid);
-    if (key == array[mid]) {
-        result.first_occ = mid;
-        printf("first_occ: %d\n", result.first_occ);
-        binary_search_recursive(array, key, (mid+1), end); 
-        binary_search_recursive(array, key, start, (mid-1));
+
+    // if (key == array[mid]) {
+    //     // result.first_occ = mid;
+    //     array_occ[0] = mid;
+    //     printf("first_occ: %d\n", array_occ[0]);
+    //     // printf("first_occ: %d\n", result.first_occ);
+    //     binary_search_recursive(array, array_occ, key, (mid+1), end); 
+    //     binary_search_recursive(array, array_occ, key, start, (mid-1));
+    // }
+    // if (key < array[mid]) binary_search_recursive(array, array_occ, key, start, (mid-1));
+    // if (key > array[mid]) binary_search_recursive(array, array_occ, key, (mid+1), end);    
+}
+
+int binary_search_rec_left(int *array, int key, int start, int end) {
+    if (start > end) {
+        return -1;  
     }
-    if (key < array[mid]) binary_search_recursive(array, key, start, (mid-1));
-    if (key > array[mid]) binary_search_recursive(array, key, (mid+1), end);    
-    // binary_search_recursive(array, key, start, end);   
+    int mid = (end-start)/2 + start;
+
+    if (key == array[mid]) {
+        int left = binary_search_rec_left(array, key, start, (mid-1));
+        if (left < 0) return mid;
+        else return left;
+    }
+    if (key < array[mid]) return binary_search_rec_left(array, key, start, (mid-1));
+    if (key > array[mid]) return binary_search_rec_left(array, key, (mid+1), end);  
+}
+
+int binary_search_rec_right(int *array, int key, int start, int end) {
+    if (start > end) {
+        return -1;  
+    }
+    int mid = (end-start)/2 + start;
+    
+    if (key == array[mid]) {
+        int right = binary_search_rec_right(array, key, (mid+1), end);
+        if (right < 0) return mid;
+        else return right;
+    }
+    if (key < array[mid]) return binary_search_rec_right(array, key, start, (mid-1));
+    if (key > array[mid]) return binary_search_rec_right(array, key, (mid+1), end);  
 }
